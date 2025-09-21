@@ -1,7 +1,8 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                      radarr                         ║
 # ╚═════════════════════════════════════════════════════╝
-# By Myrenic!
+# By Myrenic
+
 # Versions as ARGs for Renovate
 ARG RADARR_VERSION=5.27.5.10198
 ARG DOTNET_VERSION=8.0.413
