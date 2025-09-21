@@ -1,4 +1,4 @@
-name: Docker Build Images
+name: Docker Build
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0  # fetch full history
+          fetch-depth: 0
 
       - name: Detect changed services
         id: set-matrix
@@ -31,7 +31,6 @@ jobs:
             | grep -oP 'images/services/\K[^/]+(?=/)' \
             | sort -u)
           if [ -z "$CHANGED_SERVICES" ]; then
-            echo "No changes detected."
             echo "::set-output name=matrix::[]"
           else
             MATRIX=$(echo $CHANGED_SERVICES | jq -R -s -c 'split(" ") | map({service:.})')
@@ -45,8 +44,11 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.detect-and-build.outputs.services)}}
       fail-fast: false
-    if: ${{ matrix.service != '' }}
     steps:
+      - name: Skip if no service
+        if: ${{ matrix.service == '' }}
+        run: echo "No changed service, skipping build."
+      
       - name: Checkout repository
         uses: actions/checkout@v5
 
@@ -61,6 +63,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image
+        if: ${{ matrix.service != '' }}
         uses: docker/build-push-action@v6
         with:
           context: images/services/${{ matrix.service }}
