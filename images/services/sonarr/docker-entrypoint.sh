@@ -13,11 +13,5 @@ if [ "$EXTERNAL_AUTH" = "true" ] && [ -f "$CONFIG_FILE" ]; then
     fi
 fi
 
-# Set container timezone
-if [ -n "$TZ" ]; then
-    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime
-    echo "$TZ" > /etc/timezone
-fi
-
 # Start Sonarr
 exec dotnet /app/Sonarr.dll --no-browser --data=/config
