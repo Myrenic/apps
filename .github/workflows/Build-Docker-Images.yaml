@@ -4,7 +4,7 @@ name: Docker Build
 on:
   push:
     paths:
-      - 'images/radarr/*'
+      - 'images/services/radarr*'
     
 permissions:
   contents: read
