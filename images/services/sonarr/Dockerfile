@@ -1,7 +1,7 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                      SONARR                         ║
 # ╚═════════════════════════════════════════════════════╝
-# By Myrenic :D
+# By Myrenic
 
 # Versions as ARGs for Renovate
 ARG SONARR_VERSION=4.0.15.2941

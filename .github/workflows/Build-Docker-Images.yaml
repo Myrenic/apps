@@ -29,10 +29,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Fetch full history
+        run: git fetch --prune --unshallow
+
       - name: Detect changed services
         id: changes
         run: |
-          echo "CHANGED_SERVICES=$(git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep -oP 'images/services/\K[^/]+(?=/)' | sort -u | tr '\n' ' ')" >> $GITHUB_ENV
+          CHANGED_SERVICES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+            | grep -oP 'images/services/\K[^/]+(?=/)' \
+            | sort -u \
+            | tr '\n' ' ')
+          echo "CHANGED_SERVICES=$CHANGED_SERVICES" >> $GITHUB_ENV
+          echo "Changed services: $CHANGED_SERVICES"
 
       - name: Build and push changed images
         if: ${{ env.CHANGED_SERVICES != '' }}
