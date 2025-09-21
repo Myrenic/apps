@@ -13,13 +13,12 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  detect-and-build:
+  detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      services: ${{ steps.set-matrix.outputs.matrix }}
-
+      services: ${{ steps.set-matrix.outputs.services }}
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
@@ -27,29 +26,30 @@ jobs:
       - name: Detect changed services
         id: set-matrix
         run: |
-          CHANGED_SERVICES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+          CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
             | grep -oP 'images/services/\K[^/]+(?=/)' \
-            | sort -u)
-          if [ -z "$CHANGED_SERVICES" ]; then
-            echo "::set-output name=matrix::[]"
+            | sort -u \
+            | tr '\n' ' ')
+          if [ -z "$CHANGED" ]; then
+            echo "services=[]" >> $GITHUB_OUTPUT
+            echo "No changed services."
           else
-            MATRIX=$(echo $CHANGED_SERVICES | jq -R -s -c 'split(" ") | map({service:.})')
-            echo "Changed services: $CHANGED_SERVICES"
-            echo "::set-output name=matrix::$MATRIX"
+            MATRIX=$(echo $CHANGED | jq -R -s -c 'split(" ") | map({service:.})')
+            echo "services=$MATRIX" >> $GITHUB_OUTPUT
+            echo "Changed services: $CHANGED"
           fi
 
   build:
-    needs: detect-and-build
+    needs: detect-changes
     runs-on: ubuntu-latest
     strategy:
-      matrix: ${{fromJson(needs.detect-and-build.outputs.services)}}
-      fail-fast: false
+      matrix: ${{ fromJson(needs.detect-changes.outputs.services) }}
     steps:
       - name: Skip if no service
         if: ${{ matrix.service == '' }}
         run: echo "No changed service, skipping build."
-      
-      - name: Checkout repository
+
+      - name: Checkout
         uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
@@ -62,7 +62,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push
         if: ${{ matrix.service != '' }}
         uses: docker/build-push-action@v6
         with:
