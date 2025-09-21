@@ -1,0 +1,59 @@
+version: '3'
+
+vars:
+  REGISTRY: ghcr.io/myrenic
+  DOTNET_VERSION: 8.0.20
+  SONARR_VERSION: 4.0.15.2941
+  RADARR_VERSION: 5.27.5.10198
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  build:dotnet:
+    desc: Build the custom dotnet-distroless base image
+    dir: ./images/tools/dotnet
+    cmds:
+      - docker build -t {{.REGISTRY}}/dotnet-distroless:{{.DOTNET_VERSION}} --build-arg DOTNET_VERSION={{.DOTNET_VERSION}} .
+
+  build:sonarr:
+    desc: Build the Sonarr image using dotnet-distroless
+    dir: ./images/services/sonarr
+    cmds: 
+    - |
+      docker build \
+        -t {{.REGISTRY}}/sonarr:{{.SONARR_VERSION}} \
+        --build-arg SONARR_VERSION={{.SONARR_VERSION}} \
+        --build-arg DOTNET_VERSION={{.DOTNET_VERSION}} \
+        .
+
+  build:radarr:
+    desc: Build the Sonarr image using dotnet-distroless
+    dir: ./images/services/radarr
+    cmds: 
+    - |
+      docker build \
+        -t {{.REGISTRY}}/radarr:{{.RADARR_VERSION}} \
+        --build-arg RADARR_VERSION={{.RADARR_VERSION}} \
+        --build-arg DOTNET_VERSION={{.DOTNET_VERSION}} \
+        .
+
+  run:sonarr:
+    desc: Run the sonarr image
+    dir: ./images/services/sonarr
+    cmds:
+    - docker run --rm -it -e EXTERNAL_AUTH=true -v /home/mtuntelder/sonarr/config:/config -p 8989:8989 {{.REGISTRY}}/sonarr:{{.SONARR_VERSION}} 
+
+  run:radarr:
+    desc: Run the radarr image
+    dir: ./images/services/radarr
+    cmds:
+    - docker run --rm -it -e EXTERNAL_AUTH=true -v /home/mtuntelder/radarr/config:/config -p 7878:7878 {{.REGISTRY}}/radarr:{{.RADARR_VERSION}} 
+
+
+  build:all:
+    desc: Build dotnet-distroless and Sonarr
+    cmds:
+      - task: build:sonarr
+      - task: build:radarr
