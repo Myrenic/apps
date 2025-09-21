@@ -13,7 +13,7 @@ ARG APP_ROOT=/config
 # ────────────────────────────────
 # Builder: download radarr release
 # ────────────────────────────────
-FROM alpine:3.20 AS builder
+FROM alpine:3.22 AS builder
 
 ARG RADARR_VERSION
 WORKDIR /tmp
