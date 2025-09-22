@@ -30,7 +30,7 @@ RUN curl -L https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION
 # ────────────────────────────────
 # Final: based on custom dotnet distroless
 # ────────────────────────────────
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 
 ARG APP_UID
 ARG APP_GID
