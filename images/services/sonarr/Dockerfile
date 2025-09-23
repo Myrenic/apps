@@ -13,7 +13,7 @@ ARG APP_ROOT=/config
 # ────────────────────────────────
 # Builder: download Sonarr release
 # ────────────────────────────────
-FROM alpine:3.20 AS builder
+FROM alpine:3.22 AS builder
 
 ARG SONARR_VERSION
 WORKDIR /tmp
