@@ -1,7 +1,7 @@
 # ╔═════════════════════════════════════════════════════╗
 # ║                      radarr                         ║
 # ╚═════════════════════════════════════════════════════╝
-# By Myrenic
+# By Myrenic on 7/10/2025
 
 # Versions as ARGs for Renovate
 ARG RADARR_VERSION=5.27.5.10198
