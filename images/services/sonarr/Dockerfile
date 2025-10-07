@@ -13,7 +13,7 @@ ARG APP_ROOT=/config
 # renovate: datasource=custom.sonarr-develop depName=sonarr versioning=loose
 ARG RADARR_VERSION=5.17.2.9580
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
-ARG DOTNET_VERSION=10.0-alpine
+ARG DOTNET_VERSION=10.0.0-rc.1-windowsservercore-ltsc2025
 
 # ────────────────────────────────
 # Builder: download Radarr release
