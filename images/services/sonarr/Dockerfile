@@ -10,9 +10,8 @@ ARG APP_ROOT=/config
 # ────────────────────────────────
 # Versions for Renovate
 # ────────────────────────────────
-# renovate: datasource=github-releases packageName=radarr/radarr versioning=loose
+# renovate: datasource=custom.sonarr-develop depName=sonarr versioning=loose
 ARG RADARR_VERSION=5.17.2.9580
-FROM radarr/radarr:{RADARR_VERSION}
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
 ARG DOTNET_VERSION=10.0-alpine
 
