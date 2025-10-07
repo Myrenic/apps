@@ -17,7 +17,7 @@ WORKDIR /tmp
 RUN apk add --no-cache curl tar
 
 # Construct URL statically for Renovate
-# renovate: datasource=github-releases depName=radarr/radarr versioning=loose
+# renovate: datasource=github-releases packageName=radarr/radarr versioning=loose
 ARG RADARR_VERSION=5.17.2.9580
 RUN curl -L https://github.com/radarr/radarr/releases/download/v${RADARR_VERSION}/Radarr.master.${RADARR_VERSION}.linux-musl-core-x64.tar.gz \
     -o radarr.tar.gz && \

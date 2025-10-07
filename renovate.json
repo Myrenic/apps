@@ -1,22 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
-  "packageRules": [
-    {
-      "managers": ["dockerfile"],
-      "packagePatterns": ["^RADARR_VERSION$"],
-      "enabled": true,
-      "versioning": "loose",
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "radarr/radarr"
-    },
-    {
-      "managers": ["dockerfile"],
-      "packagePatterns": ["^SONARR_VERSION$"],
-      "enabled": true,
-      "versioning": "loose",
-      "datasourceTemplate": "github-releases",
-      "depNameTemplate": "Sonarr/Sonarr"
-    }
+  "extends": [
+    "config:recommended"
   ]
 }
