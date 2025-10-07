@@ -3,9 +3,15 @@
 # ╚═════════════════════════════════════════════════════╝
 # By Myrenic
 
-# Versions as ARGs for Renovate
+# ────────────────────────────────
+# Versions (Renovate will detect)
+# ────────────────────────────────
+# renovate: datasource=github-releases depName=Sonarr/Sonarr versioning=loose
 ARG SONARR_VERSION=4.0.15.2941
-ARG DOTNET_VERSION=8.0.413
+
+# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet
+ARG DOTNET_VERSION=10.0-alpine
+
 ARG APP_UID=1000
 ARG APP_GID=1000
 ARG APP_ROOT=/config
@@ -20,38 +26,41 @@ WORKDIR /tmp
 
 RUN apk add --no-cache curl tar
 
-# Construct URL statically for Renovate
-# Example pattern: https://github.com/Sonarr/Sonarr/releases/download/v4.0.15.2941/Sonarr.main.4.0.15.2941.linux-musl-x64.tar.gz
+# Download Sonarr release (static URL pattern for Renovate)
 RUN curl -L https://github.com/Sonarr/Sonarr/releases/download/v${SONARR_VERSION}/Sonarr.main.${SONARR_VERSION}.linux-musl-x64.tar.gz \
     -o sonarr.tar.gz && \
     mkdir /sonarr && \
     tar -xzf sonarr.tar.gz -C /sonarr && \
     rm sonarr.tar.gz
+
 # ────────────────────────────────
-# Final: based on custom dotnet distroless
+# Final image
 # ────────────────────────────────
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}
 
 ARG APP_UID
 ARG APP_GID
+ARG APP_ROOT
 
 ENV EXTERNAL_AUTH=false
 WORKDIR /app
 
+# Copy Sonarr from builder
 COPY --from=builder /sonarr/* /app
 
-# Root user
+# Root setup
 USER root
-
 RUN apk add --no-cache sqlite-libs curl && \
     mkdir -p ${APP_ROOT}/etc && \
     mkdir /config && chown -R ${APP_UID}:${APP_GID} /config
 
+# Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Non-root user
+# Switch to non-root
 USER ${APP_UID}:${APP_GID}
+
 EXPOSE 8989
 VOLUME /config
 
