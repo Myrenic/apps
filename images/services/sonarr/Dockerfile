@@ -52,7 +52,8 @@ COPY --from=builder /sonarr/* /app
 USER root
 RUN apk add --no-cache sqlite-libs curl && \
     mkdir -p ${APP_ROOT}/etc && \
-    mkdir /config && chown -R ${APP_UID}:${APP_GID} /config
+    chown -R ${APP_UID}:${APP_GID} ${APP_ROOT}
+
 
 # Entrypoint
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh

@@ -50,9 +50,10 @@ COPY --from=builder /radarr/* /app
 # Root user
 USER root
 
-RUN apk add --no-cache sqlite-libs icu-libs curl && \
+RUN apk add --no-cache sqlite-libs curl && \
     mkdir -p ${APP_ROOT}/etc && \
-    mkdir /config && chown -R ${APP_UID}:${APP_GID} /config
+    chown -R ${APP_UID}:${APP_GID} ${APP_ROOT}
+
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
