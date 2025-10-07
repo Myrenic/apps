@@ -7,12 +7,6 @@
 # Versions as ARGs for Renovate
 # ────────────────────────────────
 
-# renovate: datasource=github-releases depName=radarr/radarr versioning=loose
-ARG RADARR_VERSION=5.17.2.9580
-
-# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
-ARG DOTNET_VERSION=10.0-alpine
-
 ARG APP_UID=1000
 ARG APP_GID=1000
 ARG APP_ROOT=/config
@@ -22,12 +16,13 @@ ARG APP_ROOT=/config
 # ────────────────────────────────
 FROM alpine:3.22 AS builder
 
-ARG RADARR_VERSION
 WORKDIR /tmp
 
 RUN apk add --no-cache curl tar
 
 # Construct URL statically for Renovate
+# renovate: datasource=github-releases depName=radarr/radarr versioning=loose
+ARG RADARR_VERSION=5.17.2.9580
 RUN curl -L https://github.com/radarr/radarr/releases/download/v${RADARR_VERSION}/Radarr.master.${RADARR_VERSION}.linux-musl-core-x64.tar.gz \
     -o radarr.tar.gz && \
     mkdir /radarr && \
@@ -37,6 +32,8 @@ RUN curl -L https://github.com/radarr/radarr/releases/download/v${RADARR_VERSION
 # ────────────────────────────────
 # Final: based on .NET distroless
 # ────────────────────────────────
+# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
+ARG DOTNET_VERSION=10.0-alpine
 FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}
 
 ARG APP_UID
