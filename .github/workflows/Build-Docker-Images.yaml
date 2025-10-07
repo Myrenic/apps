@@ -45,7 +45,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -53,10 +53,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          echo "Building Docker image for ${{ matrix.service }}"
+          TAG=${GITHUB_SHA::7}  # first 7 characters of commit SHA
+          echo "Building Docker image for ${{ matrix.service }} with tag $TAG"
           docker buildx build \
             --cache-from type=gha \
             --cache-to type=gha,mode=max \
-            --tag ghcr.io/myrenic/${{ matrix.service }}:latest \
+            --tag ghcr.io/myrenic/${{ matrix.service }}:$TAG \
             images/services/${{ matrix.service }} \
             --push
