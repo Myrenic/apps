@@ -3,10 +3,6 @@
 # ╚═════════════════════════════════════════════════════╝
 # By Myrenic
 
-# ────────────────────────────────
-# Versions as ARGs for Renovate
-# ────────────────────────────────
-
 ARG APP_UID=1000
 ARG APP_GID=1000
 ARG APP_ROOT=/config
@@ -32,9 +28,7 @@ RUN curl -L https://github.com/radarr/radarr/releases/download/v${RADARR_VERSION
 # ────────────────────────────────
 # Final: based on .NET distroless
 # ────────────────────────────────
-# renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
-ARG DOTNET_VERSION=10.0-alpine
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 
 ARG APP_UID
 ARG APP_GID
