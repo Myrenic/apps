@@ -1,16 +1,17 @@
 # ╔═════════════════════════════════════════════════════╗
-# ║                      RADARR                         ║
+# ║                      radarr                         ║
 # ╚═════════════════════════════════════════════════════╝
 # By Myrenic
 
 # ────────────────────────────────
 # Versions as ARGs for Renovate
 # ────────────────────────────────
+
 # renovate: datasource=github-releases depName=radarr/radarr versioning=loose
 ARG RADARR_VERSION=5.27.5.10198
 
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet versioning=loose
-ARG DOTNET_VERSION=8.0.413
+ARG DOTNET_VERSION=10.0-alpine
 
 ARG APP_UID=1000
 ARG APP_GID=1000

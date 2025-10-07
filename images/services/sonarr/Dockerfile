@@ -10,7 +10,7 @@
 ARG SONARR_VERSION=4.0.15.2941
 
 # renovate: datasource=docker depName=mcr.microsoft.com/dotnet/aspnet
-ARG DOTNET_VERSION=8.0.413
+ARG DOTNET_VERSION=10.0-alpine
 
 ARG APP_UID=1000
 ARG APP_GID=1000
