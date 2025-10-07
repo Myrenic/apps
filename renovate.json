@@ -2,5 +2,17 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "datasource": "github-releases",
+      "depName": "radarr/radarr",
+      "packagePatterns": ["^RADARR_VERSION$"]
+    },
+    {
+      "datasource": "github-releases",
+      "depName": "Sonarr/Sonarr",
+      "packagePatterns": ["^SONARR_VERSION$"]
+    }
   ]
 }
