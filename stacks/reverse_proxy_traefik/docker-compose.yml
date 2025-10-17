@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  # only allow container, service and network info
+  docker-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: docker_proxy
+    environment:
+      CONTAINERS: 1      
+      SERVICES: 1          
+      NETWORKS: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - web
+
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker.endpoint=tcp://docker-proxy:2375"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "580:80"
+      - "5443:443"
+      # - "8080:8080"                         # dashboard
+    networks:
+      - web
+
+networks:
+  web:

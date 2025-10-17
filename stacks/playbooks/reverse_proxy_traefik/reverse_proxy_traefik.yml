@@ -1,0 +1,11 @@
+- name: Deploy Zabbix Proxy Stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    stack_name: "reverse_proxy_traefik"
+    stack_compose_file: "/stacks/reverse_proxy_traefik/docker-compose.yml"
+
+  tasks:
+    - import_tasks: ../common.yml
