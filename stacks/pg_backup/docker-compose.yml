@@ -14,7 +14,7 @@ services:
       TZ: "Europe/Amsterdam"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pgbackweb.rule=Host(`nlgro-docker-p1`) && PathPrefix(`/backups`)"
+      - "traefik.http.routers.backend-db.rule=Host(`${SERVER_HOSTNAME}`) && PathPrefix(`/backups`)"
       - "traefik.http.routers.pgbackweb.entrypoints=websecure"
       - "traefik.http.services.pgbackweb.loadbalancer.server.port=8085"
     networks:

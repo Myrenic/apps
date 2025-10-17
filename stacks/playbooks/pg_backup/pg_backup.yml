@@ -12,8 +12,11 @@
     POSTGRES_USER: "postgres"
     POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
     POSTGRES_DB: "pgbackweb"
+    SERVER_HOSTNAME: "{{ lookup('env', 'SERVER_HOSTNAME') }}"
 
     stack_env_vars:
+      - name: SERVER_HOSTNAME
+        value: "{{ SERVER_HOSTNAME }}"
       - name: PBW_ENCRYPTION_KEY
         value: "{{ PBW_ENCRYPTION_KEY }}"
       - name: POSTGRES_USER
@@ -22,6 +25,8 @@
         value: "{{ POSTGRES_PASSWORD }}"
       - name: POSTGRES_DB
         value: "{{ POSTGRES_DB }}"
+      - name: SERVER_HOSTNAME
+        value: "{{ SERVER_HOSTNAME }}"
       - name: PBW_POSTGRES_CONN_STRING
         value: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
 
