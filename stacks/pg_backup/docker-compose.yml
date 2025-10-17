@@ -15,6 +15,11 @@ services:
       PBW_ENCRYPTION_KEY: "${PBW_ENCRYPTION_KEY}" 
       PBW_POSTGRES_CONN_STRING: "${PBW_POSTGRES_CONN_STRING}"
       TZ: "Europe/Amsterdam"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pgbackweb.rule=PathPrefix(`/backups/`)"
+      - "traefik.http.routers.pgbackweb.entrypoints=web"
+      - "traefik.http.services.pgbackweb.loadbalancer.server.port=8085"
     networks:
       - postgres_backup-network
       
