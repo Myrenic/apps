@@ -1,0 +1,155 @@
+version: "3.9"
+
+services:
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:7.4-ubuntu-latest
+    container_name: zabbix-server
+    environment:
+      DB_SERVER_HOST: ${DB_SERVER_HOST}
+      ZBX_LOG_LEVEL: ${ZBX_LOG_LEVEL}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ZBX_CACHESIZE: 2G
+      ZBX_HISTORYCACHESIZE: 1G
+      ZBX_TRENDCACHESIZE: 512M
+      ZBX_VALUECACHESIZE: 1G
+      ZBX_STARTPOLLERS: 50
+      ZBX_STARTDISCOVERERS: 10
+      ZBX_STARTALERTERS: 5
+      ZBX_STARTESCALATORS: 3
+      ZBX_STARTPOLLERSUNREACHABLE: 10
+      ZBX_STARTTRAPPERS: 5
+      ZBX_STARTPINGERS: 10
+      ZBX_TIMEOUT: 10
+      ZBX_LOGSLOWQUERIES: 3000
+    volumes:
+      - alertscripts:/usr/lib/zabbix/alertscripts:ro
+      - externalscripts:/usr/lib/zabbix/externalscripts:ro
+    ports:
+      - "10051:10051"
+    depends_on:
+      - zabbix-db
+    networks:
+      - zabbix-network
+    healthcheck:
+      test: ["CMD-SHELL", "zabbix_server -V >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 12G
+        reservations:
+          memory: 8G
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:7.4-ubuntu-latest
+    container_name: zabbix-web
+    volumes:
+      - certs:/certs:ro
+    environment:
+      ZBX_SERVER_NAME: ${ZBX_SERVER_NAME}
+      DB_SERVER_HOST: ${DB_SERVER_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PHP_TZ: ${PHP_TZ}
+      ZBX_SSO_IDP_CERT: ${ZBX_SSO_IDP_CERT}
+      ZBX_SSO_SETTINGS: ${ZBX_SSO_SETTINGS}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zabbix-server
+    networks:
+      - zabbix-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          memory: 2G
+
+  zabbix-db:
+    image: timescale/timescaledb:2.19.3-pg14
+    container_name: zabbix-db
+    command: >
+      postgres -c 'max_connections=1000'
+               -c 'shared_preload_libraries=timescaledb'
+               -c 'shared_buffers=8GB'
+               -c 'effective_cache_size=20GB'
+               -c 'work_mem=128MB'
+               -c 'maintenance_work_mem=1GB'
+               -c 'max_wal_size=8GB'
+               -c 'checkpoint_completion_target=0.9'
+               -c 'timescaledb.telemetry_level=off'
+               -c 'timescaledb.max_background_workers=16'
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - database:/var/lib/postgresql/data:Z
+    networks:
+      - zabbix-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 12G
+        reservations:
+          memory: 8G
+
+  zabbix-db-backup:
+    image: prodrigestivill/postgres-backup-local
+    container_name: zabbix-db-backup
+    environment:
+      POSTGRES_HOST: zabbix-db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_SCHEDULE: "@daily"
+    volumes:
+      - ./backups:/backups
+    networks:
+      - zabbix-network
+    depends_on:
+      - zabbix-db
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          memory: 512M
+
+volumes:
+  alertscripts:
+  externalscripts:
+  database:
+  certs:
+
+networks:
+  zabbix-network:
+    driver: bridge
+    internal: true
