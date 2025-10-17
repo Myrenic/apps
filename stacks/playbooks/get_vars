@@ -6,8 +6,7 @@
     echo ""
     echo ""
     echo "Please try again, example: source ./get_vars ./path/to/playbook"
-    return 1
-    return
+    exit 1
 }
 
 PLAYBOOK="$1"
