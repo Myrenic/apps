@@ -36,7 +36,7 @@
         value: >-
           '{"baseurl": "https://{{ zbx_node_name }}", "use_proxy_headers": true, "security": {"requestedAuthnContext": false}}'
 
-    stack_name: "zabbix-server"
+    stack_name: "zabbix-web"
     stack_compose_file: "/stacks/zabbix-web/docker-compose.yml"
 
   tasks:
