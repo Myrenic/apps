@@ -72,3 +72,4 @@ volumes:
 networks:
   mtu_switchtool-network:
     driver: bridge
+  web:
