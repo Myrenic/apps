@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   zabbix-server:
-    image: zabbix/zabbix-server-pgsql@sha256:f756b2b6cafd7edf8eaf8d8312617e832e9397cd0f618f6131370210a60d2319
+    image: zabbix/zabbix-server-pgsql@sha256:66de4a9604305f02305c2403a5458ca08ad0ece4a2529863ed2ebfa8bb7eb522
     container_name: zabbix-server
     environment:
       DB_SERVER_HOST: ${DB_SERVER_HOST}
