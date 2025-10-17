@@ -24,8 +24,8 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
     ports:
-      - "580:80"
-      - "5443:443"
+      - "80:80"
+      - "443:443"
       - "7070:8080"                         # dashboard
     networks:
       - internal
