@@ -4,7 +4,7 @@
   gather_facts: false
 
   vars:
-    portainer_url: "https://10.0.100.10:9443"
+    portainer_url: "{{ lookup('env', 'portainer_url') }}"
     portainer_username: "{{ lookup('env', 'portainer_username') }}"
     portainer_password: "{{ lookup('env', 'portainer_password') }}"
     portainer_endpoint_id: "2"
@@ -51,4 +51,4 @@
     stack_compose_file: "/stacks/zabbix-proxy/docker-compose.yml"
 
   tasks:
-    - import_tasks: ./common.yml
+    - import_tasks: ../common.yml

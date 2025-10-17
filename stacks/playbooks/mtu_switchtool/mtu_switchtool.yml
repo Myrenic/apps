@@ -1,0 +1,36 @@
+- name: Deploy Zabbix Proxy Stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    portainer_url: "{{ lookup('env', 'portainer_url') }}"
+    portainer_username: "{{ lookup('env', 'portainer_username') }}"
+    portainer_password: "{{ lookup('env', 'portainer_password') }}"
+    portainer_endpoint_id: "2"
+    DB_PASSWORD: "{{ lookup('env', 'DB_PASSWORD') }}"
+    VITE_REACT_APP_DATABASE_API_URL: "{{ lookup('env', 'VITE_REACT_APP_DATABASE_API_URL') }}"
+    VITE_REACT_APP_CISCO_API_URL: "{{ lookup('env', 'VITE_REACT_APP_CISCO_API_URL') }}"
+    HOST_USERNAME: "{{ lookup('env', 'HOST_USERNAME') }}"
+    HOST_PASSWORD: "{{ lookup('env', 'HOST_PASSWORD') }}"
+    CISCO_API_PASSWORD: "{{ lookup('env', 'CISCO_API_PASSWORD') }}"
+
+    stack_env_vars:
+      - name: DB_PASSWORD
+        value: "{{ DB_PASSWORD }}"
+      - name: VITE_REACT_APP_DATABASE_API_URL
+        value: "{{ VITE_REACT_APP_DATABASE_API_URL }}"
+      - name: VITE_REACT_APP_CISCO_API_URL
+        value: "{{ VITE_REACT_APP_CISCO_API_URL }}"
+      - name: HOST_USERNAME
+        value: "{{ HOST_USERNAME }}"
+      - name: HOST_PASSWORD
+        value: "{{ HOST_PASSWORD }}"
+      - name: CISCO_API_PASSWORD
+        value: "{{ CISCO_API_PASSWORD }}"
+
+    stack_name: "mtu_switchtool"
+    stack_compose_file: "/stacks/mtu_switchtool/docker-compose.yml"
+
+  tasks:
+    - import_tasks: ../common.yml
