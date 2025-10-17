@@ -22,6 +22,8 @@ services:
       - "traefik.http.services.pgbackweb.loadbalancer.server.port=8085"
     networks:
       - postgres_backup-network
+    depends_on:
+      - postgres
       
   postgres:
     image: postgres:17
