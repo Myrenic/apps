@@ -30,7 +30,7 @@ services:
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
     networks:
       - mtu_switchtool-network
-      - web
+      - external
     depends_on:
       - backend-db
       - backend-cisco
@@ -50,6 +50,7 @@ services:
       - "traefik.http.services.backend-cisco.loadbalancer.server.port=5001"
     networks:
       - mtu_switchtool-network
+      - external
 
   backend-db:
     image: ghcr.io/myrenic/switchreporttool:backend-db-latest  
@@ -65,6 +66,7 @@ services:
       - "traefik.http.services.backend-db.loadbalancer.server.port=5000"
     networks:
       - mtu_switchtool-network
+      - external
 
 volumes:
   database:
@@ -72,4 +74,5 @@ volumes:
 networks:
   mtu_switchtool-network:
     driver: bridge
-  web:
+  external:
+    external: true

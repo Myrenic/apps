@@ -12,7 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - web
+      - internal
 
   traefik:
     image: traefik:v3.0
@@ -28,7 +28,10 @@ services:
       - "5443:443"
       - "7070:8080"                         # dashboard
     networks:
-      - web
+      - internal
+      - external
 
 networks:
-  web:
+  internal:
+  external:
+    external: true

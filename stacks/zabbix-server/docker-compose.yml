@@ -68,6 +68,7 @@ services:
       - zabbix-server
     networks:
       - zabbix-network
+      - external
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
       interval: 30s
@@ -115,3 +116,5 @@ volumes:
 networks:
   zabbix-network:
     driver: bridge
+  external:
+    external: true
