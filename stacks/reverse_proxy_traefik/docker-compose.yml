@@ -23,6 +23,8 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls.certresolver=default"
+      - "--entrypoints.websecure.http.tls.domains[0].main=traefik.local"
     ports:
       - "80:80"
       - "443:443"
@@ -35,7 +37,7 @@ services:
 
 volumes:
   certs:
-  
+
 networks:
   internal:
   external:
