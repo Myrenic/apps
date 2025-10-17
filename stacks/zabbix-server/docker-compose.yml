@@ -106,27 +106,8 @@ services:
       retries: 3
     restart: unless-stopped
 
-  zabbix-db-backup:
-    image: prodrigestivill/postgres-backup-local
-    container_name: zabbix-db-backup
-    environment:
-      POSTGRES_HOST: zabbix-db
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      BACKUP_KEEP_DAYS: 7
-      BACKUP_SCHEDULE: "@daily"
-    volumes:
-      - backups:/backups
-    networks:
-      - zabbix-network
-    depends_on:
-      - zabbix-db
-    restart: unless-stopped
-
 volumes:
   alertscripts:
-  backups:
   externalscripts:
   database:
   certs:

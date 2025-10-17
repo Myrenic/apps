@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - database:/var/lib/postgresql/data
+    networks:
+      - mtu_switchtool-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+
+  frontend:
+    image: ghcr.io/myrenic/switchreporttool:frontend-latest
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      VITE_REACT_APP_DATABASE_API_URL: ${VITE_REACT_APP_DATABASE_API_URL}
+      VITE_REACT_APP_CISCO_API_URL: ${VITE_REACT_APP_CISCO_API_URL}
+    networks:
+      - mtu_switchtool-network
+    depends_on:
+      - backend-db
+      - backend-cisco
+
+  backend-cisco:
+    image: ghcr.io/myrenic/switchreporttool:backend-cisco-latest  
+    restart: unless-stopped
+    environment:
+      API_TO_DB: http://backend-db:5000
+      HOST_USERNAME: ${HOST_USERNAME}
+      HOST_PASSWORD: ${HOST_PASSWORD}
+      API_PASSWORD: ${CISCO_API_PASSWORD}
+    networks:
+      - mtu_switchtool-network
+
+  backend-db:
+    image: ghcr.io/myrenic/switchreporttool:backend-db-latest  
+    restart: unless-stopped
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: db
+      DB_PORT: 5432
+    networks:
+      - mtu_switchtool-network
+
+volumes:
+  database:
+
+networks:
+  mtu_switchtool-network:
+    driver: bridge
