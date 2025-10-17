@@ -3,6 +3,7 @@ version: "3.9"
 services:
   db:
     image: postgres:latest
+    container_name: mtu_switchtool_db
     restart: always
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -44,7 +45,7 @@ services:
     restart: unless-stopped
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: db
+      DB_HOST: mtu_switchtool_db
       DB_PORT: 5432
     networks:
       - mtu_switchtool-network
