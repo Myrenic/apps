@@ -48,34 +48,6 @@ services:
       retries: 3
     restart: unless-stopped
 
-  zabbix-web:
-    image: zabbix/zabbix-web-nginx-pgsql:7.4-ubuntu-latest
-    container_name: zabbix-web
-    volumes:
-      - certs:/certs:ro
-    environment:
-      ZBX_SERVER_NAME: ${ZBX_SERVER_NAME}
-      DB_SERVER_HOST: ${DB_SERVER_HOST}
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PHP_TZ: ${PHP_TZ}
-      ZBX_SSO_IDP_CERT: ${ZBX_SSO_IDP_CERT}
-      ZBX_SSO_SETTINGS: ${ZBX_SSO_SETTINGS}
-    ports:
-      - "8080:8080"
-    depends_on:
-      - zabbix-server
-    networks:
-      - zabbix-network
-      - external
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-
   zabbix-db:
     image: timescale/timescaledb:2.19.3-pg14
     container_name: zabbix-db
@@ -112,12 +84,9 @@ volumes:
   alertscripts:
   externalscripts:
   database:
-  certs:
 
 networks:
   zabbix-network:
     driver: bridge
-  external:
-    external: true
   pg_backup:
     external: true

@@ -1,0 +1,40 @@
+- name: Deploy Zabbix Server Stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    portainer_url: "{{ lookup('env', 'portainer_url') }}"
+    portainer_username: "{{ lookup('env', 'portainer_username') }}"
+    portainer_password: "{{ lookup('env', 'portainer_password') }}"
+    portainer_endpoint_id: "2"
+
+    zbx_server_name: "{{ lookup('env', 'ZBX_SERVER_NAME') }}"
+    zbx_node_name: "{{ lookup('env', 'ZBX_NODE_NAME') }}"
+    zbx_node_ip: "{{ lookup('env', 'zbx_node_ip') }}"
+    zbx_db_password: "{{ lookup('env', 'ZBX_DB_PASSWORD') }}"
+
+    stack_env_vars:
+      - name: DB_SERVER_HOST
+        value: "zabbix-db"
+      - name: POSTGRES_DB
+        value: "zabbix"
+      - name: POSTGRES_USER
+        value: "zabbix"
+      - name: POSTGRES_PASSWORD
+        value: "{{ zbx_db_password }}"
+      - name: ZBX_SERVER_NAME
+        value: "{{ zbx_server_name }}"
+      - name: PHP_TZ
+        value: "Europe/Amsterdam"
+      - name: ZBX_SSO_IDP_CERT
+        value: "/certs/Azure.cer"
+      - name: ZBX_SSO_SETTINGS
+        value: >-
+          '{"baseurl": "https://{{ zbx_node_name }}", "use_proxy_headers": true, "security": {"requestedAuthnContext": false}}'
+
+    stack_name: "zabbix-server"
+    stack_compose_file: "/stacks/zabbix-web/docker-compose.yml"
+
+  tasks:
+    - import_tasks: ../common.yml

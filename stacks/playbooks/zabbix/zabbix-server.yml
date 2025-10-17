@@ -8,7 +8,7 @@
     portainer_username: "{{ lookup('env', 'portainer_username') }}"
     portainer_password: "{{ lookup('env', 'portainer_password') }}"
     portainer_endpoint_id: "2"
-    zbx_server_name: "{{ lookup('env', 'ZBX_SERVER_NAME') }}"
+
     zbx_node_name: "{{ lookup('env', 'ZBX_NODE_NAME') }}"
     zbx_node_ip: "{{ lookup('env', 'zbx_node_ip') }}"
     zbx_db_password: "{{ lookup('env', 'ZBX_DB_PASSWORD') }}"
@@ -68,15 +68,6 @@
         value: "{{ zbx_node_ip }}"
       - name: ZBX_HANODENAME
         value: "{{ zbx_node_name }}"
-      - name: ZBX_SERVER_NAME
-        value: "{{ zbx_server_name }}"
-      - name: PHP_TZ
-        value: "Europe/Amsterdam"
-      - name: ZBX_SSO_IDP_CERT
-        value: "/certs/Azure.cer"
-      - name: ZBX_SSO_SETTINGS
-        value: >-
-          '{"baseurl": "https://{{ zbx_node_name }}", "use_proxy_headers": true, "security": {"requestedAuthnContext": false}}'
 
     stack_name: "zabbix-server"
     stack_compose_file: "/stacks/zabbix-server/docker-compose.yml"

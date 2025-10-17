@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:7.4-ubuntu-latest
+    container_name: zabbix-web
+    volumes:
+      - certs:/certs:ro
+    environment:
+      ZBX_SERVER_NAME: ${ZBX_SERVER_NAME}
+      DB_SERVER_HOST: ${DB_SERVER_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PHP_TZ: ${PHP_TZ}
+      ZBX_SSO_IDP_CERT: ${ZBX_SSO_IDP_CERT}
+      ZBX_SSO_SETTINGS: ${ZBX_SSO_SETTINGS}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.zabbix-web.rule=Host(`nlgro-docker-p1`) && PathPrefix(`/`)"
+      - "traefik.http.routers.zabbix-web.entrypoints=websecure"
+      - "traefik.http.services.zabbix-web.loadbalancer.server.port=8080"
+    networks:
+      - external
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+
+volumes:
+  certs:
+
+networks:
+  external:
+    external: true
