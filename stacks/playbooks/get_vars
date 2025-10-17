@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Check if script is sourced
+(return 0 2>/dev/null) || {
+    echo "This script must be sourced to export variables to your current shell."
+    echo ""
+    echo ""
+    echo "Please try again, example: source ./get_vars ./path/to/playbook"
+    return 1
+    return
+}
+
+PLAYBOOK="$1"
+if [ -z "$PLAYBOOK" ]; then
+    read -rp "Enter playbook file path: " PLAYBOOK
+fi
+
+if [ ! -f "$PLAYBOOK" ]; then
+    echo "File not found: $PLAYBOOK"
+    return 1
+fi
+
+# Extract all env lookups like lookup('env', 'VAR_NAME')
+VARS=$(grep -o "lookup('[^']*', '[^']*')" "$PLAYBOOK" | \
+       sed -E "s/lookup\('[^']*', '([^']*)'\)/\1/" | sort -u)
+
+MISSING_VARS=()
+
+for var in $VARS; do
+    if [ -z "${!var}" ]; then
+        MISSING_VARS+=("$var")
+    fi
+done
+
+if [ ${#MISSING_VARS[@]} -eq 0 ]; then
+    echo "All environment variables are set."
+else
+    echo "Missing environment variables:"
+    for var in "${MISSING_VARS[@]}"; do
+        echo " - $var"
+    done
+
+    read -rp "Would you like to specify them now? [y/N] " answer
+    if [[ "$answer" =~ ^[Yy]$ ]]; then
+        for var in "${MISSING_VARS[@]}"; do
+            read -rp "Enter value for $var: " value
+            export "$var=$value"
+            echo "$var set."
+        done
+    fi
+fi
