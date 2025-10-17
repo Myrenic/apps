@@ -24,7 +24,7 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls.certresolver=default"
-      - "--entrypoints.websecure.http.tls.domains[0].main=traefik.local"
+      - "--entrypoints.websecure.http.tls.domains[0].main={{ TLS_DOMAIN }}"
     ports:
       - "80:80"
       - "443:443"

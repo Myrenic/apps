@@ -8,10 +8,11 @@
     portainer_username: "{{ lookup('env', 'portainer_username') }}"
     portainer_password: "{{ lookup('env', 'portainer_password') }}"
     portainer_endpoint_id: "2"
+    TLS_DOMAIN: "{{ lookup('env', 'TLS_DOMAIN') }}"
 
     stack_env_vars:
-      - name: foo
-        value: "bar"
+      - name: TLS_DOMAIN
+        value: "TLS_DOMAIN"
 
     stack_name: "reverse_proxy_traefik"
     stack_compose_file: "/stacks/reverse_proxy_traefik/docker-compose.yml"
