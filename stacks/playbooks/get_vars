@@ -9,7 +9,14 @@
     exit 1
 }
 
+# Parse arguments
+RESET=0
 PLAYBOOK="$1"
+if [[ "$1" == "-reset" ]]; then
+    RESET=1
+    PLAYBOOK="$2"
+fi
+
 if [ -z "$PLAYBOOK" ]; then
     read -rp "Enter playbook file path: " PLAYBOOK
 fi
@@ -22,6 +29,15 @@ fi
 # Extract all env lookups like lookup('env', 'VAR_NAME')
 VARS=$(grep -o "lookup('[^']*', '[^']*')" "$PLAYBOOK" | \
        sed -E "s/lookup\('[^']*', '([^']*)'\)/\1/" | sort -u)
+
+if [ $RESET -eq 1 ]; then
+    echo "Unsetting variables from $PLAYBOOK..."
+    for var in $VARS; do
+        unset "$var"
+        echo "$var unset."
+    done
+    return
+fi
 
 MISSING_VARS=()
 
