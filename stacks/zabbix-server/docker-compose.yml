@@ -38,13 +38,8 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 12G
-        reservations:
-          memory: 8G
+    mem_limit: 12g
+    cpus: 4
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-pgsql:7.4-ubuntu-latest
@@ -72,13 +67,8 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: "2"
-          memory: 4G
-        reservations:
-          memory: 2G
+    mem_limit: 4g
+    cpus: 2
 
   zabbix-db:
     image: timescale/timescaledb:2.19.3-pg14
@@ -110,13 +100,8 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: "4"
-          memory: 12G
-        reservations:
-          memory: 8G
+    mem_limit: 12g
+    cpus: 4
 
   zabbix-db-backup:
     image: prodrigestivill/postgres-backup-local
@@ -135,13 +120,8 @@ services:
     depends_on:
       - zabbix-db
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
-        reservations:
-          memory: 512M
+    mem_limit: 1
+    cpus: 1
 
 volumes:
   alertscripts:
