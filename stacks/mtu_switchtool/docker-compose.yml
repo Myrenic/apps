@@ -30,6 +30,7 @@ services:
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
     networks:
       - mtu_switchtool-network
+      - web
     depends_on:
       - backend-db
       - backend-cisco
