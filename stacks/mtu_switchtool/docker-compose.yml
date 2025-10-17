@@ -26,7 +26,7 @@ services:
       VITE_REACT_APP_CISCO_API_URL: ${VITE_REACT_APP_CISCO_API_URL}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend-db.rule=Host(`${SERVER_HOSTNAME}`) && PathPrefix(`/mtu`)"
+      - "traefik.http.routers.backend-db.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/mtu`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
     networks:
@@ -46,7 +46,7 @@ services:
       API_PASSWORD: ${CISCO_API_PASSWORD}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend-db.rule=Host(`${SERVER_HOSTNAME}`) && PathPrefix(`/api/cisco`)"
+      - "traefik.http.routers.backend-db.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/api/cisco`)"
       - "traefik.http.routers.backend-cisco.entrypoints=websecure"
       - "traefik.http.services.backend-cisco.loadbalancer.server.port=5001"
     networks:
@@ -62,7 +62,7 @@ services:
       DB_PORT: 5432
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend-db.rule=Host(`${SERVER_HOSTNAME}`) && PathPrefix(`/api/db`)"
+      - "traefik.http.routers.backend-db.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/api/db`)"
       - "traefik.http.routers.backend-db.entrypoints=websecure"
       - "traefik.http.services.backend-db.loadbalancer.server.port=5000"
     networks:

@@ -14,11 +14,11 @@
     HOST_USERNAME: "{{ lookup('env', 'HOST_USERNAME') }}"
     HOST_PASSWORD: "{{ lookup('env', 'HOST_PASSWORD') }}"
     CISCO_API_PASSWORD: "{{ lookup('env', 'CISCO_API_PASSWORD') }}"
-    SERVER_HOSTNAME: "{{ lookup('env', 'SERVER_HOSTNAME') }}"
+    DOCKER_SERVER_NAME: "{{ lookup('env', 'DOCKER_SERVER_NAME') }}"
 
     stack_env_vars:
-      - name: SERVER_HOSTNAME
-        value: "{{ SERVER_HOSTNAME }}"
+      - name: DOCKER_SERVER_NAME
+        value: "{{ DOCKER_SERVER_NAME }}"
       - name: DB_PASSWORD
         value: "{{ DB_PASSWORD }}"
       - name: VITE_REACT_APP_DATABASE_API_URL
