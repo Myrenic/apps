@@ -1,0 +1,32 @@
+- name: Deploy Zabbix Proxy Stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    portainer_url: "{{ lookup('env', 'portainer_url') }}"
+    portainer_username: "{{ lookup('env', 'portainer_username') }}"
+    portainer_password: "{{ lookup('env', 'portainer_password') }}"
+    portainer_endpoint_id: "2"
+    PBW_ENCRYPTION_KEY: "{{ lookup('env', 'PBW_ENCRYPTION_KEY') }}"
+    POSTGRES_USER: "postgres"
+    POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+    POSTGRES_DB: "pgbackweb"
+
+    stack_env_vars:
+      - name: PBW_ENCRYPTION_KEY
+        value: "{{ PBW_ENCRYPTION_KEY }}"
+      - name: POSTGRES_USER
+        value: "{{ POSTGRES_USER }}"
+      - name: POSTGRES_PASSWORD
+        value: "{{ POSTGRES_PASSWORD }}"
+      - name: POSTGRES_DB
+        value: "{{ POSTGRES_DB }}"
+      - name: PBW_POSTGRES_CONN_STRING
+        value: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?sslmode=disable"
+
+    stack_name: "pg_backup"
+    stack_compose_file: "/stacks/pg_backup/docker-compose.yml"
+
+  tasks:
+    - import_tasks: ../common.yml

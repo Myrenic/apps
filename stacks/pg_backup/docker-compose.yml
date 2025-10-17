@@ -1,0 +1,39 @@
+version: '3.5'
+
+networks:
+  postgres_backup-network:
+    external: true
+
+services:
+  pgbackweb:
+    image: eduardolat/pgbackweb:latest
+    ports:
+      - "8085:8085"
+    volumes:
+      - backups:/backups # If you only use S3 destinations, you don't need this volume
+    environment:
+      PBW_ENCRYPTION_KEY: "${PBW_ENCRYPTION_KEY}" 
+      PBW_POSTGRES_CONN_STRING: "${PBW_POSTGRES_CONN_STRING}"
+      TZ: "Europe/Amsterdam"
+    networks:
+      - postgres_backup-network
+      
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - postgres_backup-network
+
+volumes:
+  backups:
+  db:
