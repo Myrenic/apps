@@ -1,0 +1,25 @@
+---
+- name: Deploy Portainer repository stacks
+  hosts: all
+  become: true
+  vars:
+    portainer_url: "http://localhost:9000"
+    deploy_path: "/opt/portainer"
+    portainer_token: "{{ lookup('env', 'PORTAINER_TOKEN') }}"  # store token securely
+
+  tasks:
+    - name: Deploy a new stack from Git repository
+      ansible.builtin.uri:
+        url: "{{ portainer_url }}/api/stacks/create/standalone/repository?endpointId=2"
+        method: POST
+        headers:
+          Authorization: "Bearer {{ portainer_token }}"
+          Content-Type: "application/json"
+        body_format: json
+        body:
+          Name: "zabbix-server"
+          repositoryURL: "https://github.com/mohamedfazrin/helloworld"
+          composeFile: "docker-compose.yaml"
+          AutoUpdate:
+            Interval: "5m"
+      register: new_stack_result
