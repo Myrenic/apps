@@ -126,6 +126,7 @@ services:
 
 volumes:
   alertscripts:
+  backups:
   externalscripts:
   database:
   certs:
