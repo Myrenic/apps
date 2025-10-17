@@ -14,7 +14,7 @@ services:
       TZ: "Europe/Amsterdam"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend-db.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/backups`)"
+      - "traefik.http.routers.pgbackweb.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/backups`)"
       - "traefik.http.routers.pgbackweb.entrypoints=websecure"
       - "traefik.http.services.pgbackweb.loadbalancer.server.port=8085"
     networks:

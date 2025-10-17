@@ -17,7 +17,7 @@ services:
       ZBX_SSO_SETTINGS: ${ZBX_SSO_SETTINGS}
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend-db.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/`)"
+      - "traefik.http.routers.zabbix-web.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/`)"
       - "traefik.http.routers.zabbix-web.entrypoints=websecure"
       - "traefik.http.services.zabbix-web.loadbalancer.server.port=8080"
     networks:
