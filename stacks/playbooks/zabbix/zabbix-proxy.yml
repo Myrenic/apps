@@ -1,5 +1,4 @@
----
-- name: Deploy Portainer repository stacks
+- name: Deploy Zabbix Proxy Stack
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,13 +7,12 @@
     portainer_url: "https://10.0.100.10:9443"
     portainer_username: "{{ lookup('env', 'portainer_username') }}"
     portainer_password: "{{ lookup('env', 'portainer_password') }}"
-    portainer_endpoint_id: "2" # seems to be default
+    portainer_endpoint_id: "2"
     MYSQL_PASSWORD: "{{ lookup('env', 'portainer_username') }}"
     MYSQL_ROOT_PASSWORD: "{{ lookup('env', 'MYSQL_ROOT_PASSWORD') }}"
     ZBX_SERVER_HOST: "10.0.100.10"
     ZBX_HOSTNAME: "Test Environment"
 
-    # Environment variables for stack
     stack_env_vars:
       - name: MYSQL_DATABASE
         value: "zabbix_proxy"
@@ -49,32 +47,8 @@
       - name: DB_SERVER_HOST
         value: "mysql"
 
-  tasks:
-    - name: Get Portainer auth token
-      ansible.builtin.uri:
-        url: "{{ portainer_url }}/api/auth"
-        method: POST
-        body_format: json
-        body:
-          Username: "{{ portainer_username }}"
-          Password: "{{ portainer_password }}"
-        validate_certs: no
-      register: portainer_auth
+    stack_name: "zabbix-proxy"
+    stack_compose_file: "/stacks/zabbix-proxy/docker-compose.yml"
 
-    - name: Deploy Zabbix stack with env vars
-      ansible.builtin.uri:
-        url: "{{ portainer_url }}/api/stacks/create/standalone/repository?endpointId={{ portainer_endpoint_id }}"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ portainer_auth.json.jwt }}"
-          Content-Type: "application/json"
-        body_format: json
-        body:
-          Name: "zabbix-proxy"
-          repositoryURL: "https://github.com/Myrenic/apps"
-          composeFile: "/stacks/zabbix-proxy/docker-compose.yml"
-          AutoUpdate:
-            Interval: "5m"
-          env: "{{ stack_env_vars }}"
-        validate_certs: no
-      register: new_stack_result
+  tasks:
+    - import_tasks: ./common.yml

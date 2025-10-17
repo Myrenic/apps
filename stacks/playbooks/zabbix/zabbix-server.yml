@@ -1,5 +1,4 @@
----
-- name: Deploy Portainer repository stacks
+- name: Deploy Zabbix Server Stack
   hosts: localhost
   connection: local
   gather_facts: false
@@ -8,13 +7,12 @@
     portainer_url: "https://10.0.100.10:9443"
     portainer_username: "{{ lookup('env', 'portainer_username') }}"
     portainer_password: "{{ lookup('env', 'portainer_password') }}"
-    portainer_endpoint_id: "2" # seems to be default
+    portainer_endpoint_id: "2"
     zbx_server_name: "{{ lookup('env', 'ZBX_SERVER_NAME') }}"
     zbx_node_name: "{{ lookup('env', 'ZBX_NODE_NAME') }}"
     zbx_node_ip: "{{ lookup('env', 'zbx_node_ip') }}"
     zbx_db_password: "{{ lookup('env', 'ZBX_DB_PASSWORD') }}"
 
-    # Environment variables for stack
     stack_env_vars:
       - name: DB_SERVER_HOST
         value: "zabbix-db"
@@ -80,32 +78,8 @@
         value: >-
           '{"baseurl": "https://{{ zbx_node_name }}", "use_proxy_headers": true, "security": {"requestedAuthnContext": false}}'
 
-  tasks:
-    - name: Get Portainer auth token
-      ansible.builtin.uri:
-        url: "{{ portainer_url }}/api/auth"
-        method: POST
-        body_format: json
-        body:
-          Username: "{{ portainer_username }}"
-          Password: "{{ portainer_password }}"
-        validate_certs: no
-      register: portainer_auth
+    stack_name: "zabbix-server"
+    stack_compose_file: "/stacks/zabbix-server/docker-compose.yml"
 
-    - name: Deploy Zabbix stack with env vars
-      ansible.builtin.uri:
-        url: "{{ portainer_url }}/api/stacks/create/standalone/repository?endpointId={{ portainer_endpoint_id }}"
-        method: POST
-        headers:
-          Authorization: "Bearer {{ portainer_auth.json.jwt }}"
-          Content-Type: "application/json"
-        body_format: json
-        body:
-          Name: "zabbix-server"
-          repositoryURL: "https://github.com/Myrenic/apps"
-          composeFile: "/stacks/zabbix-server/docker-compose.yml"
-          AutoUpdate:
-            Interval: "5m"
-          env: "{{ stack_env_vars }}"
-        validate_certs: no
-      register: new_stack_result
+  tasks:
+    - import_tasks: ./common.yml

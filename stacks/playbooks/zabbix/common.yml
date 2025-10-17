@@ -1,0 +1,28 @@
+- name: Get Portainer auth token
+  ansible.builtin.uri:
+    url: "{{ portainer_url }}/api/auth"
+    method: POST
+    body_format: json
+    body:
+      Username: "{{ portainer_username }}"
+      Password: "{{ portainer_password }}"
+    validate_certs: no
+  register: portainer_auth
+
+- name: Deploy Portainer stack
+  ansible.builtin.uri:
+    url: "{{ portainer_url }}/api/stacks/create/standalone/repository?endpointId={{ portainer_endpoint_id }}"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ portainer_auth.json.jwt }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      Name: "{{ stack_name }}"
+      repositoryURL: "{{ stack_repository_url | default('https://github.com/Myrenic/apps') }}"
+      composeFile: "{{ stack_compose_file }}"
+      AutoUpdate:
+        Interval: "1h"
+      env: "{{ stack_env_vars }}"
+    validate_certs: no
+  register: new_stack_result
