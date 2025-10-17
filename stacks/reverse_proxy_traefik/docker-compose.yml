@@ -22,31 +22,16 @@ services:
       - "--api.insecure=true"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.file.filename=/etc/traefik/dynamic.yml"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
     ports:
       - "80:80"
       - "443:443"
-      - "7070:8080"
-    volumes:
-      - certs:/certs
-      - dynamic-config:/etc/traefik
+      - "7070:8080"                         # dashboard
     networks:
       - internal
       - external
-    # create the inline dynamic.yml on startup
-    entrypoint: >
-      sh -c "echo 'tls:
-        certificates:
-          - certFile: /certs/traefik.crt
-            keyFile: /certs/traefik.key' > /etc/traefik/dynamic.yml &&
-        traefik"
-
-volumes:
-  certs:
-  dynamic-config:
 
 networks:
   internal:
