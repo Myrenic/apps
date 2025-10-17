@@ -30,7 +30,12 @@ services:
     networks:
       - internal
       - external
+    volumes:
+      - certs:/certs/
 
+volumes:
+  certs:
+  
 networks:
   internal:
   external:
