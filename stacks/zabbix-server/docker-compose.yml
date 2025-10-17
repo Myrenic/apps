@@ -120,7 +120,7 @@ services:
     depends_on:
       - zabbix-db
     restart: unless-stopped
-    mem_limit: 1
+    mem_limit: 1g
     cpus: 1
 
 volumes:
