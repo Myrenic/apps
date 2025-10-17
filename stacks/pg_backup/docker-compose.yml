@@ -8,7 +8,7 @@ services:
     volumes:
       - backups:/backups # If you only use S3 destinations, you don't need this volume
     environment:
-      PBW_PATH_PREFIX: "/backups"
+      PBW_PATH_PREFIX: "/backups/"
       PBW_ENCRYPTION_KEY: "${PBW_ENCRYPTION_KEY}" 
       PBW_POSTGRES_CONN_STRING: "${PBW_POSTGRES_CONN_STRING}"
       TZ: "Europe/Amsterdam"
