@@ -96,8 +96,6 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
-    mem_limit: 12g
-    cpus: 4
 
   zabbix-db-backup:
     image: prodrigestivill/postgres-backup-local
