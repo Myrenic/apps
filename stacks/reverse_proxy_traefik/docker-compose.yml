@@ -18,11 +18,15 @@ services:
     image: traefik:v3.0
     container_name: traefik
     command:
+      - "--api.dashboard=true"
       - "--api.insecure=true"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certificates[0].certfile=/certs/traefik.crt"
+      - "--entrypoints.websecure.http.tls.certificates[0].keyfile=/certs/traefik.key"
     ports:
       - "80:80"
       - "443:443"
@@ -31,7 +35,7 @@ services:
       - internal
       - external
     volumes:
-      - certs:/certs/
+      - certs:/certs
 
 volumes:
   certs:
