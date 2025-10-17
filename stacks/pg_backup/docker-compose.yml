@@ -1,9 +1,5 @@
 version: '3.5'
 
-networks:
-  postgres_backup-network:
-    external: true
-
 services:
   pgbackweb:
     image: eduardolat/pgbackweb:latest
@@ -21,10 +17,11 @@ services:
       - "traefik.http.routers.pgbackweb.entrypoints=web"
       - "traefik.http.services.pgbackweb.loadbalancer.server.port=8085"
     networks:
-      - postgres_backup-network
+      - pg_backup
+      - external
     depends_on:
       - postgres
-      
+
   postgres:
     image: postgres:17
     environment:
@@ -39,7 +36,14 @@ services:
       timeout: 5s
       retries: 5
     networks:
-      - postgres_backup-network
+      - pg_backup
+
+networks:
+  pg_backup:
+    external: true
+  external:
+    external: true
+    
 
 volumes:
   backups:
