@@ -18,8 +18,8 @@ services:
     image: traefik:v3.0
     container_name: traefik
     command:
-      - "--api.dashboard=false"
-      - "--api.insecure=false"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
@@ -30,7 +30,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # - "7070:8080"                         # dashboard
+      - "7070:8080"                         # dashboard
     networks:
       - internal
       - external
