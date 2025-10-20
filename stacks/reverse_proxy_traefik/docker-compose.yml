@@ -27,10 +27,15 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/traefik`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     ports:
       - "80:80"
       - "443:443"
-      - "7070:8080"                         # dashboard
+      #- "7070:8080"                         # dashboard
     networks:
       - internal
       - external
