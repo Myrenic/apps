@@ -43,8 +43,8 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
-      - "--tls.certificates[0].certFile=/certs/${CERT_NAME}.crt"
-      - "--tls.certificates[0].keyFile=/certs/${CERT_NAME}.key"
+      - "--tls.stores.default.defaultCertificate.certFile=/certs/${CERT_NAME}.crt"
+      - "--tls.stores.default.defaultCertificate.keyFile=/certs/${CERT_NAME}.key"
     ports:
       - "80:80"
       - "443:443"
