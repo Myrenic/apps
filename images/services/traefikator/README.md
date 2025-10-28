@@ -13,7 +13,7 @@ docker run --user 1000:1000 \
     -e CERT_RENEW_DAYS=10 \
     -e DELETE_ON_STARTUP=false \
     -v certs:/app/certs \
-    -v certs:/app/dynamic \
+    -v dynamic:/app/dynamic \
            traefikator
 ````
 
