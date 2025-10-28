@@ -14,7 +14,7 @@ services:
       - internal
 
   traefikator:
-    image: ghcr.io/myrenic/traefikator:b862509 
+    image: ghcr.io/myrenic/traefikator:b862509
     container_name: traefikator
     environment:
       CERT_NAME: "${CERT_NAME:-localhost}"

@@ -2,13 +2,13 @@ version: "3.9"
 
 services:
   db:
-    image: postgres:latest
+    image: postgres@sha256:5078d8d88aa34e961582822feb73eef6b1b1f45965debdadab848bd254c2d336
     container_name: mtu_switchtool_db
     restart: always
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - database:/var/lib/postgresql/data
+      - database:/var/lib/postgresql
     networks:
       - mtu_switchtool-network
       - pg_backup
