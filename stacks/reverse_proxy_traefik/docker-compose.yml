@@ -31,7 +31,7 @@ services:
     restart: "no"
 
   traefik:
-    image: traefik:v3.0
+    image: traefik:v3.5
     container_name: traefik
     command:
       - "--api.dashboard=false"
