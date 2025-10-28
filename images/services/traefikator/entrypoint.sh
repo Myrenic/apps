@@ -11,6 +11,7 @@ DYNAMIC_DIR="/app/dynamic"
 
 KEY_PATH="$CERT_DIR/${CERT_NAME}.key"
 CRT_PATH="$CERT_DIR/${CERT_NAME}.crt"
+
 TLS_CONFIG="$DYNAMIC_DIR/tls.yml"
 
 generate_cert() {
@@ -28,8 +29,8 @@ generate_tls_config() {
     cat > "$TLS_CONFIG" << EOF
 tls:
   certificates:
-    - certFile: $CERT_TRAEFIK_PATH
-      keyFile: $KEY_PATH
+    - certFile: "$CERT_TRAEFIK_PATH/${CERT_NAME}.crt"
+      keyFile: "$CERT_TRAEFIK_PATH/${CERT_NAME}.key"
 EOF
 }
 
