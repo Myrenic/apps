@@ -8,11 +8,12 @@ This container **runs as non-root** when you provide a user via `--user`, making
 
 ```bash
 docker run --user 1000:1000 \
-           -e CERT_NAME=mydomain.com \
-           -e CERT_DAYS=30 \
-           -e CERT_RENEW_DAYS=10 \
-           -e DELETE_ON_STARTUP=false \
-           -v certs:/app/certs \
+    -e CERT_NAME=mydomain.com \
+    -e CERT_DAYS=30 \
+    -e CERT_RENEW_DAYS=10 \
+    -e DELETE_ON_STARTUP=false \
+    -v certs:/app/certs \
+    -v certs:/app/dynamic \
            traefikator
 ````
 
