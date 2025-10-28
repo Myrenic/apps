@@ -1,24 +1,40 @@
 version: "3.9"
 
 services:
-  # only allow container, service and network info
   docker-proxy:
     image: tecnativa/docker-socket-proxy
     container_name: docker_proxy
     environment:
-      CONTAINERS: 1      
-      SERVICES: 1          
+      CONTAINERS: 1
+      SERVICES: 1
       NETWORKS: 1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - internal
 
+  traefikator:
+    image: ghcr.io/myrenic/traefikator:a72f876
+    container_name: traefikator
+    environment:
+      CERT_NAME: ${CERT_NAME}
+      CERT_DAYS: ${CERT_DAYS}
+      CERT_RENEW_DAYS: ${CERT_RENEW_DAYS}
+      DELETE_ON_STARTUP: ${DELETE_ON_STARTUP}
+    volumes:
+      - traefik_certs:/app/certs
+    networks:
+      - internal
+    depends_on:
+      - docker-proxy
+    # ensure it runs once then exits
+    restart: "no"
+
   traefik:
     image: traefik:v3.0
     container_name: traefik
     command:
-      - "--api.dashboard=true"
+      - "--api.dashboard=false"
       - "--api.insecure=false"
       - "--providers.docker.endpoint=tcp://docker-proxy:2375"
       - "--providers.docker.exposedbydefault=false"
@@ -27,18 +43,19 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`${DOCKER_SERVER_NAME}`) && PathPrefix(`/traefik`)"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      - "--tls.certificates[0].certFile=/certs/${CERT_NAME}.crt"
+      - "--tls.certificates[0].keyFile=/certs/${CERT_NAME}.key"
     ports:
       - "80:80"
       - "443:443"
-      #- "7070:8080"                         # dashboard
+    volumes:
+      - traefik_certs:/certs   # mount the volume from traefikator
     networks:
       - internal
       - external
+
+volumes:
+  traefik_certs:
 
 networks:
   internal:
