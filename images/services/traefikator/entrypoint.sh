@@ -4,6 +4,7 @@
 : "${CERT_DAYS:=365}"
 : "${CERT_RENEW_DAYS:=30}"
 : "${DELETE_ON_STARTUP:=false}"
+: "${CERT_TRAEFIK_PATH:=?Need to set CERT_TRAEFIK_PATH}"
 
 CERT_DIR="/app/certs"
 DYNAMIC_DIR="/app/dynamic"
@@ -27,7 +28,7 @@ generate_tls_config() {
     cat > "$TLS_CONFIG" << EOF
 tls:
   certificates:
-    - certFile: $CRT_PATH
+    - certFile: $CERT_TRAEFIK_PATH
       keyFile: $KEY_PATH
 EOF
 }

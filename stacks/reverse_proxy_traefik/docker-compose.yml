@@ -14,20 +14,21 @@ services:
       - internal
 
   traefikator:
-    image: ghcr.io/myrenic/traefikator:a72f876
+    image: ghcr.io/myrenic/traefikator:192b32f 
     container_name: traefikator
     environment:
-      CERT_NAME: ${CERT_NAME}
-      CERT_DAYS: ${CERT_DAYS}
-      CERT_RENEW_DAYS: ${CERT_RENEW_DAYS}
-      DELETE_ON_STARTUP: ${DELETE_ON_STARTUP}
+      CERT_NAME: "${CERT_NAME:-localhost}"
+      CERT_DAYS: "${CERT_DAYS:-90}"
+      CERT_RENEW_DAYS: "${CERT_RENEW_DAYS:-30}"
+      DELETE_ON_STARTUP: "${DELETE_ON_STARTUP:-false}"
+      CERT_TRAEFIK_PATH: "${CERT_TRAEFIK_PATH:-/certs}"
     volumes:
       - traefik_certs:/app/certs
+      - traefik_dynamic:/app/dynamic
     networks:
       - internal
     depends_on:
       - docker-proxy
-    # ensure it runs once then exits
     restart: "no"
 
   traefik:
@@ -43,19 +44,20 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
-      - "--tls.stores.default.defaultCertificate.certFile=/certs/${CERT_NAME}.crt"
-      - "--tls.stores.default.defaultCertificate.keyFile=/certs/${CERT_NAME}.key"
+      - "--providers.file.directory=/etc/traefik/dynamic"
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - traefik_certs:/certs   # mount the volume from traefikator
+      - traefik_certs:/certs
+      - traefik_dynamic:/etc/traefik/dynamic:ro
     networks:
       - internal
       - external
 
 volumes:
   traefik_certs:
+  traefik_dynamic:
 
 networks:
   internal:
