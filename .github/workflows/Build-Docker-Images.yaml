@@ -24,7 +24,7 @@ jobs:
         run: |
           # Get changed services
           CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
-            | grep -oP 'apps/\K[^/]+(?=/images/)' \
+            | grep -oP 'apps/\K[^/]+(?=/image/)' \
             | sort -u \
             | tr '\n' ',' | sed 's/,$//')
 
@@ -60,5 +60,5 @@ jobs:
             --cache-from type=gha \
             --cache-to type=gha,mode=max \
             --tag ghcr.io/myrenic/${{ matrix.service }}:$TAG \
-            apps/${{ matrix.service }}/images \
+            apps/${{ matrix.service }}/image \
             --push
