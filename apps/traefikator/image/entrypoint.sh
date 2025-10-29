@@ -1,4 +1,5 @@
 #!/bin/sh
+# https://github.com/Myrenic/apps
 
 : "${CERT_NAME:?Need to set CERT_NAME}"
 : "${CERT_DAYS:=365}"
