@@ -54,7 +54,10 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          TAG=$(date +%Y%m%d)-${GITHUB_REF_NAME}-${GITHUB_SHA::3}
+          DATE=$(date +%Y.%m.%d)
+          BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/_' '--' | tr -cd '[:alnum:]-')
+          SHORT_SHA=${GITHUB_SHA:0:6}
+          TAG="${DATE}-${BRANCH}-${SHORT_SHA}"
           echo "Building Docker image for ${{ matrix.service }} with tag $TAG"
           docker buildx build \
             --cache-from type=gha \
