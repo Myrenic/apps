@@ -88,10 +88,13 @@ jobs:
         run: |
           git diff README.md
 
-      - name: Commit changes
+      - name: Commit and push changes
         shell: pwsh
         run: |
           git add README.md
-          git diff --quiet || git commit -m "Update apps table [skip ci]"
-          git push
-
+          if (git diff --cached --quiet) {
+            Write-Host "No changes to commit."
+          } else {
+            git commit -m "Update apps table [skip ci]"
+            git push
+          }
