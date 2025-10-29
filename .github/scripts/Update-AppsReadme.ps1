@@ -16,6 +16,7 @@ function Update-AppsReadme {
     }
 
     Process {
+        # Build app table
         Get-ChildItem $AppsDir -Directory | ForEach-Object {
             $app = $_.Name
             $appPath = $_.FullName
@@ -33,23 +34,44 @@ function Update-AppsReadme {
 
             $table += "| $app | $ansible | $compose | $image | $gitDate |"
         }
+
+        # Build directory tree
+        $tree = @("apps/")
+        $items = Get-ChildItem $AppsDir -Directory
+        for ($i = 0; $i -lt $items.Count; $i++) {
+            $prefix = if ($i -eq $items.Count - 1) { "└──" } else { "├──" }
+            $tree += "$prefix $($items[$i].Name)/".PadRight(20)
+        }
+        $treeMd = $tree -join "`n"
     }
 
     End {
+        # Build Markdown table
         $tableMd = $table -join "`n"
-        $startMarker = "<!-- APPS_TABLE_START -->"
-        $endMarker = "<!-- APPS_TABLE_END -->"
 
-        if (Get-Content $ReadmePath -Raw -ErrorAction SilentlyContinue | Select-String $startMarker) {
-            $content = Get-Content $ReadmePath -Raw
-            $pattern = [regex]::Escape($startMarker) + ".*?" + [regex]::Escape($endMarker)
-            $replacement = "$startMarker`n$tableMd`n$endMarker"
-            $newContent = [regex]::Replace($content, $pattern, $replacement, [Text.RegularExpressions.RegexOptions]::Singleline)
+        # Define markers
+        $startTableMarker = "<!-- APPS_TABLE_START -->"
+        $endTableMarker   = "<!-- APPS_TABLE_END -->"
+        $startTreeMarker  = "<!-- APPS_TREE_START -->"
+        $endTreeMarker    = "<!-- APPS_TREE_END -->"
+
+        # Build replacement blocks
+        $tableBlock = "$startTableMarker`n$tableMd`n$endTableMarker"
+        $treeBlock  = "$startTreeMarker`n```````n$treeMd`n```````n$endTreeMarker"
+
+        # Read README
+        $content = Get-Content $ReadmePath -Raw -ErrorAction SilentlyContinue
+
+        # Replace or append sections
+        $content = if ($content) {
+            $content = [regex]::Replace($content, [regex]::Escape($startTableMarker) + ".*?" + [regex]::Escape($endTableMarker), $tableBlock, 'Singleline')
+            [regex]::Replace($content, [regex]::Escape($startTreeMarker) + ".*?" + [regex]::Escape($endTreeMarker), $treeBlock, 'Singleline')
         } else {
-            $newContent = "$startMarker`n$tableMd`n$endMarker"
+            "$tableBlock`n`n$treeBlock"
         }
 
-        Set-Content -Path $ReadmePath -Value $newContent -Encoding utf8
+        # Write result
+        Set-Content -Path $ReadmePath -Value $content -Encoding utf8
     }
 }
 
