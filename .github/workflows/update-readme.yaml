@@ -3,7 +3,11 @@ name: Update Apps Table README
 on:
   push:
     paths:
-      - 'apps/**'
+      - '*'
+# on:
+#   push:
+#     paths:
+#       - 'apps/**'
   workflow_dispatch:
 
 permissions:
@@ -79,9 +83,15 @@ jobs:
 
           Update-AppsReadme -AppsDir "apps" -ReadmePath "README.md"
 
+      - name: Show README diff
+        shell: pwsh
+        run: |
+          git diff README.md
+
       - name: Commit changes
         shell: pwsh
         run: |
           git add README.md
           git diff --quiet || git commit -m "Update apps table [skip ci]"
           git push
+
