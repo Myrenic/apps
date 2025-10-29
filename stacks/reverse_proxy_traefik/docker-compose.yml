@@ -51,6 +51,9 @@ services:
     volumes:
       - traefik_certs:/certs
       - traefik_dynamic:/etc/traefik/dynamic:ro
+    depends_on:
+      - docker-proxy
+      - traefikator
     networks:
       - internal
       - external
