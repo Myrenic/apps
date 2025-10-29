@@ -3,11 +3,8 @@ name: Update Apps Table README
 on:
   push:
     paths:
-      - '*'
-# on:
-#   push:
-#     paths:
-#       - 'apps/**'
+      - 'apps/**'
+
   workflow_dispatch:
 
 permissions:
@@ -25,76 +22,14 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "Myrenic[bot]"
+          git config --global user.email "myrenic[bot]@users.noreply.github.com"
 
       - name: Run PowerShell script
         shell: pwsh
         run: |
-          function Update-AppsReadme {
-              param (
-                  [string]$AppsDir = "apps",
-                  [string]$ReadmePath = "README.md"
-              )
-
-              Begin {
-                  $table = @()
-                  $table += "| App | Ansible | Compose | Image | Last Commit |"
-                  $table += "| --- | --- | --- | --- | --- |"
-              }
-
-              Process {
-                  Get-ChildItem $AppsDir -Directory | ForEach-Object {
-                      $app = $_.Name
-                      $appPath = $_.FullName
-
-                      $ansible = if (Test-Path "$appPath/ansible") { "✅" } else { "" }
-                      $compose = if (Test-Path "$appPath/compose") { "✅" } else { "" }
-                      $image   = if (Test-Path "$appPath/image")   { "✅" } else { "" }
-
-                      $gitDate = ""
-                      if (Test-Path "$appPath/.git") {
-                          $gitDate = git -C $appPath log -1 --format="%cd" --date=short
-                      } elseif (Test-Path ".git") {
-                          $gitDate = git log -1 --format="%cd" --date=short -- $appPath 2>$null
-                      }
-
-                      $table += "| $app | $ansible | $compose | $image | $gitDate |"
-                  }
-              }
-
-              End {
-                  $tableMd = $table -join "`n"
-                  $startMarker = "<!-- APPS_TABLE_START -->"
-                  $endMarker = "<!-- APPS_TABLE_END -->"
-
-                  if (Get-Content $ReadmePath -Raw -ErrorAction SilentlyContinue | Select-String $startMarker) {
-                      $content = Get-Content $ReadmePath -Raw
-                      $pattern = [regex]::Escape($startMarker) + ".*?" + [regex]::Escape($endMarker)
-                      $replacement = "$startMarker`n$tableMd`n$endMarker"
-                      $newContent = [regex]::Replace($content, $pattern, $replacement, [Text.RegularExpressions.RegexOptions]::Singleline)
-                  } else {
-                      $newContent = "$startMarker`n$tableMd`n$endMarker"
-                  }
-
-                  Set-Content -Path $ReadmePath -Value $newContent -Encoding utf8
-              }
-          }
-
-          Update-AppsReadme -AppsDir "apps" -ReadmePath "README.md"
-
-      - name: Show README diff
-        shell: pwsh
-        run: |
-          git diff README.md
+          .\.github\scripts\Update-AppsReadme.ps1 -AppsDir "apps" -ReadmePath "README.md"
 
       - name: Commit and push changes
         shell: pwsh
-        run: |
-          git add README.md
-          if (git diff --cached --quiet) {
-            Write-Host "No changes to commit."
-          } else {
-            git commit -m "Update apps table [skip ci]"
-            git push
-          }
+        run: .\.github\scripts\Commit-And-Push.ps1 -FilePath "README.md" -Message "Update apps table [skip ci]"
