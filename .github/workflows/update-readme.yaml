@@ -1,4 +1,4 @@
-name: Update Apps README
+name: Update Apps Table README
 
 on:
   push:
