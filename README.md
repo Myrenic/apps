@@ -8,6 +8,20 @@ Each app resides in its own directory under `apps/`, with subfolders for automat
 ## 📁 Repository Structure
 
 <!-- APPS_TREE_START -->
+```
+apps/
+├── common/         
+├── mtu_switchtool/ 
+├── netbox/         
+├── pg_backup/      
+├── radarr/         
+├── sonarr/         
+├── traefik/        
+├── traefikator/    
+├── zabbix-proxy/   
+├── zabbix-server/  
+└── zabbix-web/     
+```
 <!-- APPS_TREE_END -->
 
 ## 📦 App Overview
@@ -39,3 +53,4 @@ Each app resides in its own directory under `apps/`, with subfolders for automat
 * The table above is automatically generated.
 * Each app is self-contained and can be deployed independently.
 * Common automation tasks are centralized in `apps/common/`.
+
