@@ -23,7 +23,7 @@ jobs:
         run: |
           # Get changed services
           CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
-            | grep -oP 'images/services/\K[^/]+(?=/)' \
+            | grep -oP 'apps/\K[^/]+(?=/images/)' \
             | sort -u \
             | tr '\n' ',' | sed 's/,$//')
 
@@ -53,11 +53,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          TAG=${GITHUB_SHA::7}  # first 7 characters of commit SHA
+          TAG=$(date +%Y%m%d)-${GITHUB_SHA::7}  # first 7 characters of commit SHA
           echo "Building Docker image for ${{ matrix.service }} with tag $TAG"
           docker buildx build \
             --cache-from type=gha \
             --cache-to type=gha,mode=max \
             --tag ghcr.io/myrenic/${{ matrix.service }}:$TAG \
-            images/services/${{ matrix.service }} \
+            apps/${{ matrix.service }}/images \
             --push

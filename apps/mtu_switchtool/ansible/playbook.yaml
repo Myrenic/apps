@@ -1,4 +1,4 @@
-- name: Deploy Zabbix Proxy Stack
+- name: Deploy "mtu_switchtool" Stack
   hosts: localhost
   connection: local
   gather_facts: false
@@ -36,4 +36,4 @@
     stack_compose_file: "/stacks/mtu_switchtool/docker-compose.yml"
 
   tasks:
-    - import_tasks: ../common.yml
+    - import_tasks: ../../common/ansible/portainer_deploy.yaml
