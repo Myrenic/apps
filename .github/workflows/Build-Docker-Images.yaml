@@ -53,7 +53,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          TAG=$(date +%Y%m%d)-${GITHUB_SHA::7}  # first 7 characters of commit SHA
+          TAG=$(date +%Y%m%d)-${GITHUB_REF_NAME}-${GITHUB_SHA::3}
           echo "Building Docker image for ${{ matrix.service }} with tag $TAG"
           docker buildx build \
             --cache-from type=gha \
