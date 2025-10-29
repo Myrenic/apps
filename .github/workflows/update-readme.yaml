@@ -6,6 +6,9 @@ on:
       - 'apps/**'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   update-readme:
     runs-on: windows-latest
@@ -75,7 +78,6 @@ jobs:
           }
 
           Update-AppsReadme -AppsDir "apps" -ReadmePath "README.md"
-
 
       - name: Commit changes
         shell: pwsh

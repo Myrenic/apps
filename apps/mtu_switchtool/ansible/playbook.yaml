@@ -1,4 +1,4 @@
-- name: Deploy "mtu_switchtool" Stack
+- name: Deploy mtu_switchtool Stack
   hosts: localhost
   connection: local
   gather_facts: false
