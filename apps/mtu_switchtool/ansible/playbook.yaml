@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 - name: Deploy mtu_switchtool Stack
+=======
+- name: Deploy "mtu_switchtool" Stack
+>>>>>>> ede8d22 (full refactoring of all file paths.)
   hosts: localhost
   connection: local
   gather_facts: false
