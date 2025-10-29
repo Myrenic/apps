@@ -1,4 +1,4 @@
-- name: Get Portainer auth token
+- name: Get "Portainer" auth token
   ansible.builtin.uri:
     url: "{{ portainer_url }}/api/auth"
     method: POST
