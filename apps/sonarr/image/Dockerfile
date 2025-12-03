@@ -18,7 +18,7 @@ ARG DOTNET_VERSION=10.0-alpine
 # ────────────────────────────────
 # Builder: download Radarr release
 # ────────────────────────────────
-FROM alpine:3.22 AS builder
+FROM alpine:3.23 AS builder
 
 WORKDIR /tmp
 RUN apk add --no-cache curl tar
