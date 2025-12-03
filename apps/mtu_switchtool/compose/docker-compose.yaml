@@ -35,6 +35,10 @@ services:
     depends_on:
       - backend-db
       - backend-cisco
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80 || exit 1"]
+      interval: 10s
+      retries: 5
 
   backend-cisco:
     image: ghcr.io/myrenic/switchreporttool:backend-cisco-latest  
@@ -52,6 +56,11 @@ services:
     networks:
       - mtu_switchtool-network
       - external
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/5001' || exit 1"]
+      interval: 10s
+      retries: 5
+
 
   backend-db:
     image: ghcr.io/myrenic/switchreporttool:backend-db-latest  
@@ -68,6 +77,10 @@ services:
     networks:
       - mtu_switchtool-network
       - external
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/5000' || exit 1"]
+      interval: 10s
+      retries: 5
 
 volumes:
   database:
