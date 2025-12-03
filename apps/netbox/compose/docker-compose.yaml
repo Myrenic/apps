@@ -171,7 +171,7 @@ services:
     container_name: netbox-housekeeping
 
   postgres:
-    image: postgres:14
+    image: postgres:18
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
