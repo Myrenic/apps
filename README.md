@@ -29,17 +29,17 @@ apps/
 <!-- APPS_TABLE_START -->
 | App | Ansible | Compose | Image | Last Commit |
 | --- | --- | --- | --- | --- |
-| common | ✅ |  |  | 2025-10-29 |
-| mtu_switchtool | ✅ | ✅ |  | 2025-10-29 |
-| netbox |  | ✅ |  | 2025-10-29 |
-| pg_backup | ✅ | ✅ |  | 2025-10-29 |
-| radarr |  |  | ✅ | 2025-10-29 |
-| sonarr |  |  | ✅ | 2025-10-29 |
-| traefik | ✅ | ✅ |  | 2025-10-29 |
-| traefikator |  |  | ✅ | 2025-10-29 |
-| zabbix-proxy | ✅ | ✅ |  | 2025-10-29 |
-| zabbix-server | ✅ | ✅ |  | 2025-10-29 |
-| zabbix-web | ✅ | ✅ |  | 2025-10-29 |
+| common | ✅ |  |  | 2025-12-03 |
+| mtu_switchtool | ✅ | ✅ |  | 2025-12-03 |
+| netbox |  | ✅ |  | 2025-12-03 |
+| pg_backup | ✅ | ✅ |  | 2025-12-03 |
+| radarr |  |  | ✅ | 2025-12-03 |
+| sonarr |  |  | ✅ | 2025-12-03 |
+| traefik | ✅ | ✅ |  | 2025-12-03 |
+| traefikator |  |  | ✅ | 2025-12-03 |
+| zabbix-proxy | ✅ | ✅ |  | 2025-12-03 |
+| zabbix-server | ✅ | ✅ |  | 2025-12-03 |
+| zabbix-web | ✅ | ✅ |  | 2025-12-03 |
 <!-- APPS_TABLE_END -->
 
 ## ⚙️ Usage
@@ -53,4 +53,5 @@ apps/
 * The table above is automatically generated.
 * Each app is self-contained and can be deployed independently.
 * Common automation tasks are centralized in `apps/common/`.
+
 
