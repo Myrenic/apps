@@ -189,7 +189,7 @@ services:
     container_name: postgres
 
   redis:
-    image: redis:6-alpine
+    image: redis:8-alpine
     command: >
       sh -c "redis-server --appendonly yes --requirepass $$REDIS_PASSWORD"
     environment:
@@ -207,7 +207,7 @@ services:
     container_name: redis
 
   redis-cache:
-    image: redis:6-alpine
+    image: redis:8-alpine
     command: >
       sh -c "redis-server --requirepass $$REDIS_CACHE_PASSWORD"
     environment:
