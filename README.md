@@ -54,4 +54,7 @@ apps/
 * Each app is self-contained and can be deployed independently.
 * Common automation tasks are centralized in `apps/common/`.
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 731936e (chore: update portainer_deploy.yaml)
