@@ -17,4 +17,4 @@
     stack_compose_file: "/stacks/reverse_proxy_traefik/docker-compose.yml"
 
   tasks:
-    - import_tasks: ../common.yml
+    - import_tasks: ../../common/ansible/portainer_deploy.yaml

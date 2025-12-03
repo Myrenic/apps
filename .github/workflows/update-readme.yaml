@@ -1,0 +1,35 @@
+name: Update Apps Table README
+
+on:
+  push:
+    paths:
+      - 'apps/**'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "Myrenic[bot]"
+          git config --global user.email "myrenic[bot]@users.noreply.github.com"
+
+      - name: Run PowerShell script
+        shell: pwsh
+        run: |
+          .\.github\scripts\Update-AppsReadme.ps1 -AppsDir "apps" -ReadmePath "README.md"
+
+      - name: Commit and push changes
+        shell: pwsh
+        run: .\.github\scripts\Commit-And-Push.ps1 -FilePath "README.md" -Message "Update apps table [skip ci]"

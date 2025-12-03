@@ -2,7 +2,8 @@ name: Build Docker Images
 
 on:
   push:
-    branches: [main]
+    branches:
+      - '**'
 
 permissions:
   contents: read
@@ -23,7 +24,11 @@ jobs:
         run: |
           # Get changed services
           CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
-            | grep -oP 'images/services/\K[^/]+(?=/)' \
+<<<<<<< HEAD
+            | grep -oP 'apps/\K[^/]+(?=/image/)' \
+=======
+            | grep -oP 'apps/\K[^/]+(?=/images/)' \
+>>>>>>> ede8d22 (full refactoring of all file paths.)
             | sort -u \
             | tr '\n' ',' | sed 's/,$//')
 
@@ -53,11 +58,22 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          TAG=${GITHUB_SHA::7}  # first 7 characters of commit SHA
+<<<<<<< HEAD
+          DATE=$(date +%Y.%m.%d)
+          BRANCH=$(echo "${GITHUB_REF_NAME}" | tr '/_' '--' | tr -cd '[:alnum:]-')
+          SHORT_SHA=${GITHUB_SHA:0:6}
+          TAG="${DATE}-${BRANCH}-${SHORT_SHA}"
+=======
+          TAG=$(date +%Y%m%d)-${GITHUB_SHA::7}  # first 7 characters of commit SHA
+>>>>>>> ede8d22 (full refactoring of all file paths.)
           echo "Building Docker image for ${{ matrix.service }} with tag $TAG"
           docker buildx build \
             --cache-from type=gha \
             --cache-to type=gha,mode=max \
             --tag ghcr.io/myrenic/${{ matrix.service }}:$TAG \
-            images/services/${{ matrix.service }} \
+<<<<<<< HEAD
+            apps/${{ matrix.service }}/image \
+=======
+            apps/${{ matrix.service }}/images \
+>>>>>>> ede8d22 (full refactoring of all file paths.)
             --push

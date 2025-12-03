@@ -73,4 +73,4 @@
     stack_compose_file: "/stacks/zabbix-server/docker-compose.yml"
 
   tasks:
-    - import_tasks: ../common.yml
+    - import_tasks: ../../common/ansible/portainer_deploy.yaml
